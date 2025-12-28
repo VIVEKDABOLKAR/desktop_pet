@@ -1,0 +1,143 @@
+# ============================================
+# IDE & Editor Files
+# ============================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# NetBeans
+nbproject/
+nbactions.xml
+nb-configuration.xml
+
+# ============================================
+# Build Outputs
+# ============================================
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Ant
+dist/
+build/
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# OS & System Files
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+desktop.ini
+Thumbs.db
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+
+# ============================================
+# Java Specific
+# ============================================
+
+# Log files
+*.log
+logs/
+
+# Sensitive data
+*.keystore
+*.jks
+*.p12
+*.pfx
+
+# Coverage reports
+coverage/
+jacoco.exec
+*.gcov
+
+# ============================================
+# Your Custom Patterns
+# ============================================
+
+# Your custom ignore patterns
+*.ign.*
+ignored/
+temp/
+
+# Local configuration
+local.properties
+.env
+.secrets
+
+# ============================================
+# Project Specific
+# ============================================
+
+# Generated assets (if you generate any)
+generated-assets/
+
+# User-specific settings
+user-settings.properties
+
+# Runtime data
+runtime/
+data/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# Documentation (optional)
+# ============================================
+
+# Documentation builds
+docs/_build/
+site/
