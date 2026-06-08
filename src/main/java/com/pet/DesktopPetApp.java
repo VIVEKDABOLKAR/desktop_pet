@@ -4,6 +4,7 @@ package com.pet;
 
 import com.pet.animation.AnimationManager;
 import com.pet.animation.physics.DesktopPhysics;
+import com.pet.animation.physics.PetBody;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 public class DesktopPetApp extends JFrame {
     private Image dogImage;
     private Point dragOffset;
+
     private AnimationManager animationManager;
     private DesktopPhysics physics;
     private JPanel panel;
@@ -76,7 +78,6 @@ public class DesktopPetApp extends JFrame {
             protected void paintComponent(Graphics g) { // THIS FUNCTION CALL EVERY TIME WE CALL REPAINT
                 setOpaque(false);
                 Image currentFrame = animationManager.getCurrentFrame();
-
                 if (currentFrame != null) {
                     // System.out.println("MAIN-JPANEL :- Drawing current animation frame...");
                     g.drawImage(currentFrame, 0, 0, getWidth(), getHeight(), null);
@@ -88,6 +89,15 @@ public class DesktopPetApp extends JFrame {
                     g.setColor(Color.RED);
                     g.fillRect(0, 0, getWidth(), getHeight());
                 }
+                //temp - rempve after plllll
+                g.setColor(Color.GREEN);
+                g.drawRect(
+                    0,
+                    0,
+                    PetBody.WIDTH,
+                    PetBody.HEIGHT
+                );
+
                 setOpaque(false);
             }
         };

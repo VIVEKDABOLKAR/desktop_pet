@@ -8,7 +8,11 @@ public class DesktopPhysics {
     private static final float GRAVITY = 0.5f; // gravity acceleration
     private static final float MAX_FALL_SPEED = 15f; // max falling speed
     private static final float FRICTION = 0.9f; // friction coefficient
-    private static final float JUMP_FORCE = -12f; // bounce damping factor
+    private static final int EDGE_MARGIN = 20;
+
+    //pet size
+    private static final int width = PetBody.WIDTH;
+    private static final int height = PetBody.HEIGHT;
 
     // effective vectors 
     private float velocityX = 0;
@@ -16,32 +20,22 @@ public class DesktopPhysics {
     private float positionX = 100;
     private float positionY = 100;
     private boolean onGround = false;
-    private boolean isJumping = false;
 
     // //screen bounds for desktop
-    private Rectangle screenBounds;
-
-    // //robot for simulating mouse movements
-    private Robot robot;
+    private final Rectangle screenBounds;
 
 
-    // Constructor - initialize screen bounds and robot (get info about the desktop)
+    // Constructor - initialize screen bounds from the desktop
     public DesktopPhysics() {
-        try {
-            this.robot = new Robot();
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            this.screenBounds = new Rectangle(0, 0, screenSize.width, screenSize.height);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.screenBounds = new Rectangle(0, 0, screenSize.width, screenSize.height);
     }
 
-    // apply physicsto the pet's position
+    // apply physics to the pet's position
     public void update() {
         // apply gravity
         if (!onGround) {
-            velocityY += GRAVITY;
-            velocityY = Math.min(velocityY, MAX_FALL_SPEED);
+            velocityY = Math.min(getVelocityY() + GRAVITY, MAX_FALL_SPEED);
         }
 
         // update position
@@ -51,24 +45,22 @@ public class DesktopPhysics {
         // apply friction
         if (onGround) {
             velocityX *= FRICTION;
-            if (Math.abs(velocityX) < 0.1f) {
+            if (Math.abs(getVelocityX()) < 0.1f) {
                 velocityX = 0;
             }
         }
 
         // check ground collision
-        if (positionY >= screenBounds.height - 115) { // assuming pet height is 128
-            positionY = screenBounds.height - 115;
-            velocityY = 0;
+        if (positionY >= screenBounds.height - height) {
+            resolveGround();
             onGround = true;
-            isJumping = false;
         } else {
             onGround = false;
         }
 
         // ensure pet stays within screen bounds
         if (positionX < 0) positionX = 0;
-        if (positionX > screenBounds.width - 128) positionX = screenBounds.width - 128; // assuming pet width is 128
+        if (positionX > screenBounds.width - width) positionX = screenBounds.width - width;
     }
 
     // apply external force to the pet
@@ -96,11 +88,59 @@ public class DesktopPhysics {
     }
 
     public boolean isOnGround() {
-        return onGround;
+        return positionY + height >= screenBounds.height;
+    }
+
+    public boolean isNearLeftEdge() {
+        return positionX <= EDGE_MARGIN;
+    }
+
+    public boolean isNearRightEdge() {
+        return positionX + width >= screenBounds.width - EDGE_MARGIN;
+    }
+
+    public boolean isNearHorizontalEdge() {
+        Rectangle2D expandedPetBounds = new Rectangle2D.Float(
+                positionX - EDGE_MARGIN,
+                positionY,
+                width + (EDGE_MARGIN * 2f),
+                height);
+        return !screenBounds.contains(expandedPetBounds);
+    }
+
+    public boolean canJump() {
+        return isOnGround() && (isEdgeAheadLeft() || isEdgeAheadRight());
+    }
+
+    public void resolveGround() {
+    if (isOnGround()) {
+        positionY = screenBounds.height - height;
+        velocityY = 0;
+    }
+}
+
+    public boolean isEdgeAheadRight() {
+        return isNearHorizontalEdge() && isNearRightEdge();
+    }
+
+    public boolean isEdgeAheadLeft() {
+        return isNearHorizontalEdge() && isNearLeftEdge();
     }
 
     public Rectangle getScreenBound() {
         return screenBounds;
+    }
+
+    public int getEdgeMargin() {
+        return EDGE_MARGIN;
+    }
+
+    public Rectangle getExpandedBounds() {
+        int x = Math.max(0, (int) positionX - EDGE_MARGIN);
+        int y = Math.max(0, (int) positionY);
+        int w = Math.min(screenBounds.width - x, width + EDGE_MARGIN * 2);
+        int h = Math.min(screenBounds.height - y, height);
+        return new Rectangle(x, y, w, h);
     }
 
     public static void main(String[] args) {
