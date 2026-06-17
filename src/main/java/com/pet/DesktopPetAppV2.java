@@ -5,6 +5,7 @@ package com.pet;
 import com.pet.animation.AnimationManager;
 import com.pet.animation.physics.DesktopPhysics;
 import com.pet.animation.physics.PetBody;
+import com.pet.behavior.BehaviorManager;
 import com.pet.core.PetContext;
 import com.pet.core.constant.PetState;
 import com.pet.resource.AnimationAssetsRegistry;
@@ -15,11 +16,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-import javax.imageio.ImageIO;
-import java.io.InputStream;
 
-@Deprecated
-public class DesktopPetApp extends JFrame {
+public class DesktopPetAppV2 extends JFrame {
     private Image dogImage;
     private Point dragOffset;
 
@@ -34,7 +32,12 @@ public class DesktopPetApp extends JFrame {
     private boolean isPhysicsEnabled = true; // to enable/disable physics
     private boolean isAnimationEnabled = true; // to enable/disable animation
 
-    public DesktopPetApp() {
+    //di
+    private AssetManager assetManager = new AssetManager();
+    private PetContext petContext;
+    private BehaviorManager behaviorManager;
+
+    public DesktopPetAppV2() {
         // Basic window setup
         setSize(128, 128);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -42,9 +45,18 @@ public class DesktopPetApp extends JFrame {
         setAlwaysOnTop(true);
         setBackground(new Color(0, 0, 0, 0));
         setLocation(100, 100);
+
+        //petcontext
+        petContext = new PetContext();
+
+        /*old icon load
         ImageIcon icon = new ImageIcon(getClass().getResource("/assets/dog_icon.png"));
         setIconImage(icon.getImage());
-        
+        */
+
+        //new icon load
+        ImageIcon icon1 = assetManager.loadIcon("/assets/dog_icon.png");
+        setIconImage(icon1.getImage());
 
         this.addWindowFocusListener(new WindowFocusListener() {
             @Override
@@ -62,20 +74,6 @@ public class DesktopPetApp extends JFrame {
             }
         });
 
-        // Load dog image from resources
-        try {
-            // This loads from src/main/resources/assets/
-            InputStream is = getClass().getResourceAsStream("/assets/dog_idle_2.png");
-            if (is != null) {
-                dogImage = ImageIO.read(is);
-            } else {
-                System.err.println("MAIN :- Could not find dog_idle.png in resources");
-                dogImage = createFallbackDog();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            dogImage = createFallbackDog();
-        }
 
         // Create transparent panel
         panel = new JPanel() {
@@ -86,10 +84,7 @@ public class DesktopPetApp extends JFrame {
                 if (currentFrame != null) {
                     // System.out.println("MAIN-JPANEL :- Drawing current animation frame...");
                     g.drawImage(currentFrame, 0, 0, getWidth(), getHeight(), null);
-                } else if (dogImage != null) {
-                    System.out.println("MAIN-JPANEL :-Drawing dog image...");
-                    g.drawImage(dogImage, 0, 0, getWidth(), getHeight(), null);
-                } else {
+                }  else {
                     System.err.println("MAIN-JPANEL :- No frame to draw!");
                     g.setColor(Color.RED);
                     g.fillRect(0, 0, getWidth(), getHeight());
@@ -112,9 +107,13 @@ public class DesktopPetApp extends JFrame {
         // Initialize Physics, Animation Manager
         physics = new DesktopPhysics();
         animationManager = new AnimationManager(
-                new PetContext(),
+                petContext,
                 panel::repaint,
-                new AnimationAssetsRegistry(new AssetManager())
+                new AnimationAssetsRegistry(assetManager)
+        );
+        behaviorManager = new BehaviorManager(
+                petContext,
+                physics
         );
 
         // set init positon
@@ -141,23 +140,6 @@ public class DesktopPetApp extends JFrame {
         setVisible(true);
     }
 
-
-    private void createFallbackIcon() {
-        // Create a simple colored icon as fallback
-        BufferedImage img = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = img.createGraphics();
-        
-        // Draw a simple dog icon
-        g.setColor(new Color(139, 69, 19)); // Brown
-        g.fillOval(10, 20, 44, 30); // Body
-        g.fillOval(40, 5, 20, 20);  // Head
-        g.setColor(Color.BLACK);
-        g.fillOval(45, 10, 5, 5);   // Eye
-        g.fillOval(55, 10, 5, 5);   // Eye
-        
-        g.dispose();
-        setIconImage(img);
-    }
 
     // update loop for physics and repaint - updateTimer
     private void startUpdateLoop() {
@@ -228,40 +210,29 @@ public class DesktopPetApp extends JFrame {
 
     // handle click interaction <- mouesClicked calls this
     private void handleClickInteraction(AnimationManager animationManager) {
-        PetState[] states = {
+        java.util.List<PetState> states = java.util.List.of(
                 PetState.IDLE,
                 PetState.WALKING,
                 PetState.SITTING,
                 PetState.PLAYING
-        };
+        );
 
-        String currentState = animationManager.getCurrentState();
+        //get current state
+        //find index of that state
+        //increase state by one (handle overflow)
+        int nextIdx = (states.indexOf(petContext.getState()) + 1) % states.size();
+
+        //set new state
+        petContext.setState(states.get(nextIdx));
+
         System.out.println("woof... woof..");
-        for (int i = 0; i < states.length; i++) {
-            if (states[i].equals(currentState)) {
-                PetState nextState = states[(i + 1) % states.length];
 
-                break;
-            }
-        }
         System.out.println("Current State: " + animationManager.getCurrentState());
-    }
-
-    private Image createFallbackDog() {
-        // Simple black dog as fallback
-        BufferedImage img = new BufferedImage(128, 128,
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = img.createGraphics();
-        g.setColor(Color.BLACK);
-        g.fillOval(30, 50, 68, 48);
-        g.fillOval(80, 30, 40, 40);
-        g.dispose();
-        return img;
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new DesktopPetApp();
+            new DesktopPetAppV2();
         });
     }
 
@@ -271,6 +242,8 @@ public class DesktopPetApp extends JFrame {
             updateTimer.stop();
 
         animationManager.dispose();
+
+        behaviorManager.dispose();
 
         if (topMostTimer != null)
             topMostTimer.stop();

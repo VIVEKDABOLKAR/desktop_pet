@@ -9,11 +9,14 @@ import com.pet.animation.AnimationManager;
 import com.pet.animation.enviroment.NativeWindow;
 import com.pet.animation.enviroment.WindowsScanner;
 import com.pet.animation.physics.DesktopPhysics;
+import com.pet.core.PetContext;
+import com.pet.core.constant.PetState;
+
 import java.awt.Rectangle;
 
-public class MouseChasingBehavior {
+public class MouseChasingBehavior implements PetBehavior {
     private final DesktopPhysics physics;
-    private final AnimationManager animationManager;
+    private final PetContext petContext;
     private Point lastMousePosition;
 
     private boolean isChasing = false;
@@ -24,11 +27,12 @@ public class MouseChasingBehavior {
     private static final float CHASE_SPEED = 0.5f;
     private static final int CATCH_RANGE = 0;
 
-    public MouseChasingBehavior (DesktopPhysics physics, AnimationManager animationManager) {
+    public MouseChasingBehavior (
+            PetContext petContext,
+            DesktopPhysics physics) {
+        this.petContext = petContext;
         this.physics = physics;
-        this.animationManager = animationManager;
 
-        setupMouseTracking();
     }
 
     private void setupMouseTracking() {
@@ -46,7 +50,9 @@ public class MouseChasingBehavior {
         Point petPosition = physics.getPosition();
         float distanceX = lastMousePosition.x - petPosition.x + 64;
 
-        if(!isChasing && distanceX > CHASE_RANGE && animationManager.getCurrentState().equals(AnimationManager.PLAYING)) {
+        if(!isChasing && distanceX > CHASE_RANGE
+                && petContext.getState().equals(PetState.PLAYING)
+        ) {
             startChasing();
         }
 
@@ -118,7 +124,7 @@ public class MouseChasingBehavior {
                             chaseUpdateTimer.stop();
                         }
 
-                        animationManager.setAnimationState(AnimationManager.IDLE);
+                        petContext.setState(PetState.IDLE);
                     });
                     celebrateTimer.setRepeats(false);
                     celebrateTimer.start();
@@ -135,5 +141,15 @@ public class MouseChasingBehavior {
         if (chaseUpdateTimer != null) {
             chaseUpdateTimer.stop();
         }
+    }
+
+    @Override
+    public void start() {
+        setupMouseTracking();
+    }
+
+    @Override
+    public void stop() {
+        dispose();
     }
 }
