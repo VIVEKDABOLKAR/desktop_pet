@@ -45,7 +45,7 @@ public class AnimationAssetsRegistry {
     /**
      * Returns animation frames for a state.
      */
-    public Image[] getFrames(String state) {
+    public Image[] getFrames(PetState state) {
         return animations.get(state);
     }
 

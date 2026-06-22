@@ -1,6 +1,7 @@
 package com.pet.behavior;
 
-import com.pet.animation.physics.DesktopPhysics;
+
+import com.pet.animation.physics.PhysicsEngine;
 import com.pet.behavior.MouseChasingBehavior;
 import com.pet.behavior.PetBehavior;
 import com.pet.core.PetContext;
@@ -9,13 +10,13 @@ import com.pet.core.constant.PetState;
 public class BehaviorManager {
 
     private final PetContext context;
-    private final DesktopPhysics physics;
+    private final PhysicsEngine physics;
 
     private PetBehavior activeBehavior;
 
     public BehaviorManager(
             PetContext context,
-            DesktopPhysics physics
+            PhysicsEngine physics
     ) {
         this.context = context;
         this.physics = physics;

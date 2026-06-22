@@ -60,7 +60,7 @@
 
                         <manifestEntries>
                             <Implementation-Title>Desktop Pet</Implementation-Title>
-                            <Implementation-Version>1.0.0</Implementation-Version>
+                            <Implementation-Version>2.0.0</Implementation-Version>
                             <Icon-Image>/assets/dog_icon.png</Icon-Image>
                         </manifestEntries>
 

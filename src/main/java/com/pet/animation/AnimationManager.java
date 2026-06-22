@@ -2,7 +2,6 @@ package com.pet.animation;
 
 import javax.swing.*;
 
-import com.pet.animation.physics.DesktopPhysics;
 import com.pet.behavior.MouseChasingBehavior;
 import com.pet.core.PetContext;
 import com.pet.core.constant.PetState;
@@ -106,7 +105,7 @@ public class AnimationManager {
     private Image[] getCurrentAnimation() {
 
         return animationRegistry.getFrames(
-                petContext.getState().name().toLowerCase()
+                petContext.getState()
         );
     }
 

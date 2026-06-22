@@ -8,14 +8,14 @@ import javax.swing.Timer;
 import com.pet.animation.AnimationManager;
 import com.pet.animation.enviroment.NativeWindow;
 import com.pet.animation.enviroment.WindowsScanner;
-import com.pet.animation.physics.DesktopPhysics;
+import com.pet.animation.physics.PhysicsEngine;
 import com.pet.core.PetContext;
 import com.pet.core.constant.PetState;
 
 import java.awt.Rectangle;
 
 public class MouseChasingBehavior implements PetBehavior {
-    private final DesktopPhysics physics;
+    private final PhysicsEngine physics;
     private final PetContext petContext;
     private Point lastMousePosition;
 
@@ -29,7 +29,7 @@ public class MouseChasingBehavior implements PetBehavior {
 
     public MouseChasingBehavior (
             PetContext petContext,
-            DesktopPhysics physics) {
+            PhysicsEngine physics) {
         this.petContext = petContext;
         this.physics = physics;
 

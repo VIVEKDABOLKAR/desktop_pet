@@ -3,7 +3,7 @@ package com.pet.animation.physics;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class DesktopPhysics {
+public class PhysicsEngine {
     // physics parameters
     private static final float GRAVITY = 0.5f; // gravity acceleration
     private static final float MAX_FALL_SPEED = 15f; // max falling speed
@@ -26,7 +26,7 @@ public class DesktopPhysics {
 
 
     // Constructor - initialize screen bounds from the desktop
-    public DesktopPhysics() {
+    public PhysicsEngine() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.screenBounds = new Rectangle(0, 0, screenSize.width, screenSize.height);
     }
@@ -144,7 +144,7 @@ public class DesktopPhysics {
     }
 
     public static void main(String[] args) {
-        DesktopPhysics physics = new DesktopPhysics();
+        PhysicsEngine physics = new PhysicsEngine();
         System.out.println("Screen Bounds: " + physics.screenBounds);
 
     }

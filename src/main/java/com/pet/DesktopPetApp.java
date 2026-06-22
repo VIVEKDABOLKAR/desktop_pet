@@ -3,8 +3,8 @@ package com.pet;
 // FOR LETTER TASK SERCH TASK :==
 
 import com.pet.animation.AnimationManager;
-import com.pet.animation.physics.DesktopPhysics;
 import com.pet.animation.physics.PetBody;
+import com.pet.animation.physics.PhysicsEngine;
 import com.pet.core.PetContext;
 import com.pet.core.constant.PetState;
 import com.pet.resource.AnimationAssetsRegistry;
@@ -24,7 +24,7 @@ public class DesktopPetApp extends JFrame {
     private Point dragOffset;
 
     private AnimationManager animationManager;
-    private DesktopPhysics physics;
+    private PhysicsEngine physics;
     private JPanel panel;
 
     private Timer updateTimer;
@@ -110,7 +110,7 @@ public class DesktopPetApp extends JFrame {
         add(panel);
 
         // Initialize Physics, Animation Manager
-        physics = new DesktopPhysics();
+        physics = new PhysicsEngine();
         animationManager = new AnimationManager(
                 new PetContext(),
                 panel::repaint,

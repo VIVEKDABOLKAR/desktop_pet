@@ -3,8 +3,9 @@ package com.pet;
 // FOR LETTER TASK SERCH TASK :==
 
 import com.pet.animation.AnimationManager;
-import com.pet.animation.physics.DesktopPhysics;
+import com.pet.animation.enviroment.EnvironmentManager;
 import com.pet.animation.physics.PetBody;
+import com.pet.animation.physics.PhysicsEngine;
 import com.pet.behavior.BehaviorManager;
 import com.pet.core.PetContext;
 import com.pet.core.constant.PetState;
@@ -22,7 +23,7 @@ public class DesktopPetAppV2 extends JFrame {
     private Point dragOffset;
 
     private AnimationManager animationManager;
-    private DesktopPhysics physics;
+    private PhysicsEngine physics;
     private JPanel panel;
 
     private Timer updateTimer;
@@ -36,6 +37,7 @@ public class DesktopPetAppV2 extends JFrame {
     private AssetManager assetManager = new AssetManager();
     private PetContext petContext;
     private BehaviorManager behaviorManager;
+    private EnvironmentManager environmentManager;
 
     public DesktopPetAppV2() {
         // Basic window setup
@@ -105,7 +107,7 @@ public class DesktopPetAppV2 extends JFrame {
         add(panel);
 
         // Initialize Physics, Animation Manager
-        physics = new DesktopPhysics();
+        physics = new PhysicsEngine();
         animationManager = new AnimationManager(
                 petContext,
                 panel::repaint,
@@ -138,6 +140,10 @@ public class DesktopPetAppV2 extends JFrame {
         topMostTimer.start();
 
         setVisible(true);
+
+        this.environmentManager = new EnvironmentManager(
+            physics
+        );
     }
 
 
@@ -165,6 +171,7 @@ public class DesktopPetAppV2 extends JFrame {
     }
 
     private void setupMouseListener() {
+
         // Make window draggable
         addMouseListener(new MouseAdapter() {
             // to prevent physics update during interaction
@@ -194,6 +201,7 @@ public class DesktopPetAppV2 extends JFrame {
                 }
             }
         });
+
         // mouse motion listener for dragging
         addMouseMotionListener(new MouseAdapter() {
             @Override
